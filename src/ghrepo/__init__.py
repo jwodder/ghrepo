@@ -93,21 +93,13 @@ class GHRepo(NamedTuple):
         else:
             raise ValueError(f"Invalid GitHub URL: {url!r}")
 
-    @classmethod
-    def get_local(
-        cls, chdir: Optional[AnyPath] = None, remote: str = "origin"
-    ) -> "GHRepo":
-        r = subprocess.run(
-            ["git", "remote", "get-url", remote],
-            cwd=chdir,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True,
-        )
-        if r.returncode == 0:
-            return cls.parse_url(r.stdout.strip())
-        else:
-            raise RuntimeError(
-                f"Could not determine remote URL: 'git remote get-url {remote}'"
-                f" exited with {r.returncode}:\n{r.stderr}"
-            )
+
+def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") -> GHRepo:
+    r = subprocess.run(
+        ["git", "remote", "get-url", remote],
+        cwd=dirpath,
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+        check=True,
+    )
+    return GHRepo.parse_url(r.stdout.strip())
