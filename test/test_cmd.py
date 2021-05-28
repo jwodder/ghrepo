@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess
 from _pytest.fixtures import FixtureRequest
 import pytest
+from ghrepo import GHRepo
 
 THIS_DIR = str(Path(__file__).parent)
 
@@ -20,6 +21,7 @@ def test_command_json(request: FixtureRequest) -> None:
     if local_repo is None:
         pytest.skip("--local-repo not set")
     owner, _, name = local_repo.partition("/")
+    r = GHRepo(owner, name)
     output = subprocess.check_output(
         ["ghrepo", "--json", THIS_DIR], universal_newlines=True
     )
@@ -27,4 +29,9 @@ def test_command_json(request: FixtureRequest) -> None:
         "owner": owner,
         "name": name,
         "fullname": local_repo,
+        "api_url": r.api_url,
+        "clone_url": r.clone_url,
+        "git_url": r.git_url,
+        "html_url": r.html_url,
+        "ssh_url": r.ssh_url,
     }

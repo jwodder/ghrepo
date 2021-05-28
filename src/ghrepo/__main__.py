@@ -21,7 +21,21 @@ def main() -> None:
     except subprocess.CalledProcessError:
         sys.exit(1)
     if args.json:
-        print(json.dumps({"owner": r.owner, "name": r.name, "fullname": str(r)}))
+        print(
+            json.dumps(
+                {
+                    "owner": r.owner,
+                    "name": r.name,
+                    "fullname": str(r),
+                    "api_url": r.api_url,
+                    "clone_url": r.clone_url,
+                    "git_url": r.git_url,
+                    "html_url": r.html_url,
+                    "ssh_url": r.ssh_url,
+                },
+                indent=4,
+            )
+        )
     else:
         print(r)
 
