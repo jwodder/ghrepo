@@ -7,9 +7,12 @@ from . import __version__, get_local_repo
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Show current GitHub repository")
-    parser.add_argument("--json", action="store_true", help="Output JSON")
+    parser.add_argument("-J", "--json", action="store_true", help="Output JSON")
     parser.add_argument(
-        "-r", "--remote", default="origin", help="Set Git remote [default: origin]"
+        "-r",
+        "--remote",
+        default="origin",
+        help="Parse the GitHub URL from the given remote [default: origin]",
     )
     parser.add_argument(
         "-V", "--version", action="version", version=f"%(prog)s {__version__}"

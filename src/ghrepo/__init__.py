@@ -1,6 +1,13 @@
 """
 Parse GitHub repository URLs & specifiers
 
+``ghrepo`` extracts a GitHub repository's owner & name from various GitHub URL
+formats (or just from a string of the form ``OWNER/REPONAME`` or ``REPONAME``),
+and the resulting object provides properties for going in reverse to determine
+the possible URLs.  Also included is a function for determining the GitHub
+owner & name for a local Git repository, plus a couple of other useful Git
+repository inspection functions.
+
 Visit <https://github.com/jwodder/ghrepo> for more information.
 """
 
@@ -14,6 +21,13 @@ from os import PathLike
 import re
 import subprocess
 from typing import Callable, NamedTuple, Optional, Union
+
+__all__ = [
+    "GHRepo",
+    "get_current_branch",
+    "get_local_repo",
+    "is_git_repo",
+]
 
 AnyPath = Union[str, bytes, "PathLike[str]", "PathLike[bytes]"]
 
@@ -54,6 +68,12 @@ GITHUB_URL_CREGEXEN = [
 
 
 class GHRepo(NamedTuple):
+    """
+    A pair of a GitHub repository's owner and base name.  Stringifying a
+    `GHRepo` instance produces a repository "fullname" of the form
+    ``{owner}/{name}``.
+    """
+
     owner: str
     name: str
 
@@ -62,22 +82,31 @@ class GHRepo(NamedTuple):
 
     @property
     def api_url(self) -> str:
+        """
+        The base URL for accessing the repository via the GitHub REST API; this
+        is a string of the form
+        ``https://api.github.com/repos/{owner}/{name}``.
+        """
         return f"https://api.github.com/repos/{self.owner}/{self.name}"
 
     @property
     def clone_url(self) -> str:
+        """The URL for cloning the repository over HTTPS"""
         return f"https://github.com/{self.owner}/{self.name}.git"
 
     @property
     def git_url(self) -> str:
+        """The URL for cloning the repository via the native Git protocol"""
         return f"git://github.com/{self.owner}/{self.name}.git"
 
     @property
     def html_url(self) -> str:
+        """The URL for the repository's web interface"""
         return f"https://github.com/{self.owner}/{self.name}"
 
     @property
     def ssh_url(self) -> str:
+        """The URL for cloning the repository over SSH"""
         return f"git@github.com:{self.owner}/{self.name}.git"
 
     @classmethod
@@ -86,6 +115,14 @@ class GHRepo(NamedTuple):
         spec: str,
         default_owner: Optional[Union[str, Callable[[], str]]] = None,
     ) -> "GHRepo":
+        """
+        Parse a GitHub repository specifier.  This can be either a URL (as
+        accepted by `parse_url()`) or a string in the form ``{owner}/{name}``.
+        If ``default_owner`` is specified (as either a string or a
+        zero-argument callable that returns a string), strings that are just a
+        repository name are also accepted, and the resulting `GHRepo` instances
+        will have their ``owner`` set to the given value.
+        """
         m = OWNER_REPO_CRGX.fullmatch(spec)
         if m:
             owner = m["owner"]
@@ -105,6 +142,18 @@ class GHRepo(NamedTuple):
 
     @classmethod
     def parse_url(cls, url: str) -> "GHRepo":
+        """
+        Parse a GitHub repository URL.  The following URL formats are
+        recognized:
+
+        - ``[https://[<username>[:<password>]@]][www.]github.com/<owner>/<name>\
+          [.git][/]``
+        - ``[https://]api.github.com/repos/<owner>/<name>``
+        - ``git://github.com/<owner>/<name>[.git]``
+        - ``[ssh://]git@github.com:<owner>/<name>[.git]``
+
+        All other formats produce a `ValueError`.
+        """
         for crgx in GITHUB_URL_CREGEXEN:
             m = crgx.fullmatch(url)
             if m:
@@ -114,6 +163,13 @@ class GHRepo(NamedTuple):
 
 
 def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") -> GHRepo:
+    """
+    Determine the GitHub repository for the Git repository located at or
+    containing the directory ``dirpath`` (default: the current directory) by
+    parsing the URL for the specified remote.  Raises a
+    `subprocess.CalledProcessError` if the given path is not in a GitHub
+    repository.
+    """
     r = subprocess.run(
         ["git", "remote", "get-url", remote],
         cwd=dirpath,
@@ -125,7 +181,12 @@ def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") ->
 
 
 def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
-    # Fails on detached HEAD or when not in a Git repo
+    """
+    Get the current branch for the Git repository located at or containing the
+    directory ``dirpath`` (default: the current directory).  Raises a
+    `subprocess.CalledProcessError` if the given path is not in a GitHub
+    repository or if the repository is in a detached HEAD state.
+    """
     return subprocess.run(
         ["git", "symbolic-ref", "--short", "-q", "HEAD"],
         cwd=dirpath,
@@ -136,6 +197,10 @@ def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
 
 
 def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
+    """
+    Tests whether the given directory (default: the current directory) is or is
+    contained in a Git repository.
+    """
     r = subprocess.run(
         ["git", "rev-parse", "--git-dir"],
         cwd=dirpath,
