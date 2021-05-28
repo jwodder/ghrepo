@@ -4,34 +4,35 @@ Parse GitHub repository URLs & specifiers
 Visit <https://github.com/jwodder/ghrepo> for more information.
 """
 
-__version__      = '0.1.0.dev1'
-__author__       = 'John Thorvald Wodder II'
-__author_email__ = 'ghrepo@varonathe.org'
-__license__      = 'MIT'
-__url__          = 'https://github.com/jwodder/ghrepo'
+__version__ = "0.1.0.dev1"
+__author__ = "John Thorvald Wodder II"
+__author_email__ = "ghrepo@varonathe.org"
+__license__ = "MIT"
+__url__ = "https://github.com/jwodder/ghrepo"
 
-from   os     import PathLike
+from os import PathLike
 import re
 import subprocess
-from   typing import Callable, NamedTuple, Optional, Union
+from typing import Callable, NamedTuple, Optional, Union
 
 AnyPath = Union[str, bytes, "PathLike[str]", "PathLike[bytes]"]
 
-GH_USER_RGX = r'(?![Nn][Oo][Nn][Ee]($|[^-A-Za-z0-9]))[-_A-Za-z0-9]+'
-GH_REPO_RGX = r'(?:\.?[-A-Za-z0-9_][-A-Za-z0-9_.]*|\.\.[-A-Za-z0-9_.]+)'\
-              r'(?<!\.git)'
+GH_USER_RGX = r"(?![Nn][Oo][Nn][Ee]($|[^-A-Za-z0-9]))[-_A-Za-z0-9]+"
+GH_REPO_RGX = r"(?:\.?[-A-Za-z0-9_][-A-Za-z0-9_.]*|\.\.[-A-Za-z0-9_.]+)(?<!\.git)"
 
-OWNER_REPO_RGX = re.compile(
-    fr'(?:(?P<owner>{GH_USER_RGX})/)?(?P<name>{GH_REPO_RGX})'
-)
+OWNER_REPO_RGX = re.compile(fr"(?:(?P<owner>{GH_USER_RGX})/)?(?P<name>{GH_REPO_RGX})")
 
-GITHUB_REMOTE_RGX = re.compile(fr'''
+GITHUB_REMOTE_RGX = re.compile(
+    fr"""
     (?:
         (?:https?://)?(?:(?:www\.)?github\.com/|api\.github\.com/repos/)
         |git(?:://github\.com/|@github\.com:)
     )
     (?P<owner>{GH_USER_RGX})/(?P<name>{GH_REPO_RGX})(?:\.git)?/?
-''', flags=re.X)
+""",
+    flags=re.X,
+)
+
 
 class GHRepo(NamedTuple):
     owner: str
@@ -77,8 +78,9 @@ class GHRepo(NamedTuple):
             raise ValueError(f"Invalid GitHub URL: {url!r}")
 
     @classmethod
-    def get_local(cls, chdir: Optional[AnyPath] = None, remote: str = "origin")\
-            -> "GHRepo":
+    def get_local(
+        cls, chdir: Optional[AnyPath] = None, remote: str = "origin"
+    ) -> "GHRepo":
         r = subprocess.run(
             ["git", "remote", "get-url", remote],
             cwd=chdir,
