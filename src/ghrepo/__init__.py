@@ -27,7 +27,7 @@ OWNER_REPO_RGX = re.compile(
 
 GITHUB_REMOTE_RGX = re.compile(fr'''
     (?:
-        (?:https?://)?(?:www\.)?github\.com/
+        (?:https?://)?(?:(?:www\.)?github\.com/|api\.github\.com/repos/)
         |git(?:://github\.com/|@github\.com:)
     )
     (?P<owner>{GH_USER_RGX})/(?P<name>{GH_REPO_RGX})(?:\.git)?/?
@@ -54,7 +54,8 @@ class GHRepo(NamedTuple):
         if m:
             owner = m["owner"]
             if owner is None:
-                if default_owner is None:
+                # <https://github.com/python/typeshed/issues/5546>
+                if default_owner is None:  # type: ignore[unreachable]
                     raise ValueError(f"No owner given in {spec!r}")
                 elif callable(default_owner):
                     owner = default_owner()

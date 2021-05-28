@@ -30,7 +30,7 @@ from   ghrepo import GH_REPO_RGX, GH_USER_RGX
     'pj_nitin',
     'up_the_irons',
 ])
-def test_good_users(name):
+def test_good_users(name: str) -> None:
     assert bool(re.fullmatch(GH_USER_RGX, name))
 
 @pytest.mark.parametrize('name', [
@@ -41,7 +41,7 @@ def test_good_users(name):
     'none',
     'NONE',
 ])
-def test_bad_users(name):
+def test_bad_users(name: str) -> None:
     assert re.fullmatch(GH_USER_RGX, name) is None
 
 @pytest.mark.parametrize('repo', [
@@ -72,7 +72,7 @@ def test_bad_users(name):
     '.---',
     '.steven',
 ])
-def test_good_repos(repo):
+def test_good_repos(repo: str) -> None:
     assert bool(re.fullmatch(GH_REPO_RGX, repo))
 
 @pytest.mark.parametrize('repo', [
@@ -85,5 +85,5 @@ def test_good_repos(repo):
     '',
     'steven.git',
 ])
-def test_bad_repos(repo):
+def test_bad_repos(repo: str) -> None:
     assert re.fullmatch(GH_REPO_RGX, repo) is None

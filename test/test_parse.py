@@ -72,19 +72,19 @@ BAD_REPOS = [
     ('none-none/headerparser', GHRepo("none-none", "headerparser")),
     ('nonenone/headerparser', GHRepo("nonenone", "headerparser")),
 ])
-def test_parse(spec, repo):
-    assert GHRepo.parse(spec, default_user="jwodder") == repo
+def test_parse(spec: str, repo: GHRepo) -> None:
+    assert GHRepo.parse(spec, default_owner="jwodder") == repo
 
 @pytest.mark.parametrize('spec', BAD_REPOS)
-def test_parse_bad_spec(spec):
+def test_parse_bad_spec(spec: str) -> None:
     with pytest.raises(ValueError):
         GHRepo.parse(spec)
 
 @pytest.mark.parametrize('url,repo', REPO_URLS)
-def test_parse_url(url, repo):
+def test_parse_url(url: str, repo: GHRepo) -> None:
     assert GHRepo.parse_url(url) == repo
 
 @pytest.mark.parametrize('url', BAD_REPOS)
-def test_parse_bad_url(url):
+def test_parse_bad_url(url: str) -> None:
     with pytest.raises(ValueError):
         GHRepo.parse_url(url)
