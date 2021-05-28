@@ -41,10 +41,10 @@ OWNER_REPO_RGX = re.compile(fr"(?:(?P<owner>{GH_USER_RGX})/)?(?P<name>{GH_REPO_R
 GITHUB_REPO_RGX = re.compile(
     fr"""
     (?:
-        (?:https?://)?(?:(?:www\.)?github\.com/|api\.github\.com/repos/)
+        (?:https?://)?(?:(?:www\.)?github\.com/|(?P<api>api\.github\.com/repos/))
         |git(?:://github\.com/|@github\.com:)
     )
-    (?P<owner>{GH_USER_RGX})/(?P<name>{GH_REPO_RGX})(?:\.git)?/?
+    (?P<owner>{GH_USER_RGX})/(?P<name>{GH_REPO_RGX})(?(api)|(?:\.git)?/?)
 """,
     flags=re.X,
 )
