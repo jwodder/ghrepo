@@ -20,6 +20,7 @@
 `GitHub <https://github.com/jwodder/ghrepo>`_
 | `PyPI <https://pypi.org/project/ghrepo/>`_
 | `Issues <https://github.com/jwodder/ghrepo/issues>`_
+| `Changelog <https://github.com/jwodder/ghrepo/blob/master/CHANGELOG.md>`_
 
 ``ghrepo`` extracts a GitHub repository's owner & name from various GitHub URL
 formats (or just from a string of the form ``OWNER/REPONAME`` or ``REPONAME``),

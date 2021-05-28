@@ -23,6 +23,8 @@ def main() -> None:
         r = get_local_repo(args.dirpath, remote=args.remote)
     except subprocess.CalledProcessError:
         sys.exit(1)
+    except ValueError as e:
+        sys.exit(str(e))
     if args.json:
         print(
             json.dumps(
