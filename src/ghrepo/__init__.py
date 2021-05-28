@@ -55,11 +55,27 @@ class GHRepo(NamedTuple):
     name: str
 
     def __str__(self) -> str:
-        return self.fullname
+        return f"{self.owner}/{self.name}"
 
     @property
-    def fullname(self) -> str:
-        return f"{self.owner}/{self.name}"
+    def api_url(self) -> str:
+        return f"https://api.github.com/repos/{self.owner}/{self.name}"
+
+    @property
+    def clone_url(self) -> str:
+        return f"https://github.com/{self.owner}/{self.name}.git"
+
+    @property
+    def git_url(self) -> str:
+        return f"git://github.com/{self.owner}/{self.name}.git"
+
+    @property
+    def html_url(self) -> str:
+        return f"https://github.com/{self.owner}/{self.name}"
+
+    @property
+    def ssh_url(self) -> str:
+        return f"git@github.com:{self.owner}/{self.name}.git"
 
     @classmethod
     def parse(
