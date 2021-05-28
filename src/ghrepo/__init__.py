@@ -103,3 +103,24 @@ def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") ->
         check=True,
     )
     return GHRepo.parse_url(r.stdout.strip())
+
+
+def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
+    # Fails on detached HEAD or when not in a Git repo
+    return subprocess.run(
+        ["git", "symbolic-ref", "--short", "-q", "HEAD"],
+        cwd=dirpath,
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+        check=True,
+    ).stdout.strip()
+
+
+def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
+    r = subprocess.run(
+        ["git", "rev-parse", "--git-dir"],
+        cwd=dirpath,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return bool(r.returncode == 0)
