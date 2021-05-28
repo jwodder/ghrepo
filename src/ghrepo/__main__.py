@@ -2,10 +2,11 @@ import argparse
 import json
 import subprocess
 import sys
+from typing import List
 from . import __version__, get_local_repo
 
 
-def main() -> None:
+def main(argv: List[str]) -> None:
     parser = argparse.ArgumentParser(description="Show current GitHub repository")
     parser.add_argument("-J", "--json", action="store_true", help="Output JSON")
     parser.add_argument(
@@ -18,7 +19,7 @@ def main() -> None:
         "-V", "--version", action="version", version=f"%(prog)s {__version__}"
     )
     parser.add_argument("dirpath", nargs="?")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     try:
         r = get_local_repo(args.dirpath, remote=args.remote)
     except subprocess.CalledProcessError:
@@ -46,4 +47,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()  # pragma: no cover
+    main(sys.argv[1:])  # pragma: no cover
