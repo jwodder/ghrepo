@@ -19,6 +19,14 @@ REPO_URLS = [
         GHRepo("jwodder", "headerparser"),
     ),
     (
+        "ssh://git@github.com:jwodder/headerparser",
+        GHRepo("jwodder", "headerparser"),
+    ),
+    (
+        "ssh://git@github.com:jwodder/headerparser.git",
+        GHRepo("jwodder", "headerparser"),
+    ),
+    (
         "https://api.github.com/repos/jwodder/headerparser",
         GHRepo("jwodder", "headerparser"),
     ),
@@ -28,6 +36,10 @@ REPO_URLS = [
     ),
     (
         "https://github.com/jwodder/headerparser.git",
+        GHRepo("jwodder", "headerparser"),
+    ),
+    (
+        "https://github.com/jwodder/headerparser/",
         GHRepo("jwodder", "headerparser"),
     ),
     (
@@ -54,10 +66,19 @@ REPO_URLS = [
         "https://github.com/jwodder/none.git",
         GHRepo("jwodder", "none"),
     ),
+    (
+        "https://x-access-token:1234567890@github.com/octocat/Hello-World",
+        GHRepo("octocat", "Hello-World"),
+    ),
+    (
+        "https://my.username@github.com/octocat/Hello-World",
+        GHRepo("octocat", "Hello-World"),
+    ),
 ]
 
 BAD_REPOS = [
     "https://github.com/none/headerparser.git",
+    "/repo",
     "none/repo",
     "jwodder/headerparser.git",
     "jwodder/",

@@ -36,18 +36,21 @@ GH_USER_RGX = r"(?![Nn][Oo][Nn][Ee]($|[^-A-Za-z0-9]))[-_A-Za-z0-9]+"
 #: and ``..`` being reserved and names ending with ``.git`` forbidden.
 GH_REPO_RGX = r"(?:\.?[-A-Za-z0-9_][-A-Za-z0-9_.]*|\.\.[-A-Za-z0-9_.]+)(?<!\.git)"
 
-OWNER_REPO_RGX = re.compile(fr"(?:(?P<owner>{GH_USER_RGX})/)?(?P<name>{GH_REPO_RGX})")
+#: Convenience regular expression for ``<owner>/<name>``, including named
+#: capturing groups
+OWNER_NAME = fr"(?P<owner>{GH_USER_RGX})/(?P<name>{GH_REPO_RGX})"
 
-GITHUB_REPO_RGX = re.compile(
-    fr"""
-    (?:
-        (?:https?://)?(?:(?:www\.)?github\.com/|(?P<api>api\.github\.com/repos/))
-        |git(?:://github\.com/|@github\.com:)
-    )
-    (?P<owner>{GH_USER_RGX})/(?P<name>{GH_REPO_RGX})(?(api)|(?:\.git)?/?)
-""",
-    flags=re.X,
-)
+OWNER_REPO_CRGX = re.compile(fr"(?:(?P<owner>{GH_USER_RGX})/)?(?P<name>{GH_REPO_RGX})")
+
+GITHUB_URL_CREGEXEN = [
+    re.compile(
+        r"(?:https?://(?:[^@:/]+(?::[^@/]+)?@)?)?(?:www\.)?github\.com/"
+        fr"{OWNER_NAME}(?:\.git)?/?"
+    ),
+    re.compile(fr"(?:https?://)?api\.github\.com/repos/{OWNER_NAME}"),
+    re.compile(fr"git://github\.com/{OWNER_NAME}(?:\.git)?"),
+    re.compile(fr"(?:ssh://)?git@github\.com:{OWNER_NAME}(?:\.git)?"),
+]
 
 
 class GHRepo(NamedTuple):
@@ -83,7 +86,7 @@ class GHRepo(NamedTuple):
         spec: str,
         default_owner: Optional[Union[str, Callable[[], str]]] = None,
     ) -> "GHRepo":
-        m = OWNER_REPO_RGX.fullmatch(spec)
+        m = OWNER_REPO_CRGX.fullmatch(spec)
         if m:
             owner = m["owner"]
             if owner is None:
@@ -102,10 +105,10 @@ class GHRepo(NamedTuple):
 
     @classmethod
     def parse_url(cls, url: str) -> "GHRepo":
-        # cf. the giturlparse library
-        m = GITHUB_REPO_RGX.fullmatch(url)
-        if m:
-            return cls(owner=m["owner"], name=m["name"])
+        for crgx in GITHUB_URL_CREGEXEN:
+            m = crgx.fullmatch(url)
+            if m:
+                return cls(owner=m["owner"], name=m["name"])
         else:
             raise ValueError(f"Invalid GitHub URL: {url!r}")
 
