@@ -2,11 +2,11 @@ import argparse
 import json
 import subprocess
 import sys
-from typing import List
+from typing import List, Optional
 from . import __version__, get_local_repo
 
 
-def main(argv: List[str]) -> None:
+def main(argv: Optional[List[str]] = None) -> None:
     parser = argparse.ArgumentParser(description="Show current GitHub repository")
     parser.add_argument("-J", "--json", action="store_true", help="Output JSON")
     parser.add_argument(
@@ -47,4 +47,4 @@ def main(argv: List[str]) -> None:
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])  # pragma: no cover
+    main()  # pragma: no cover
