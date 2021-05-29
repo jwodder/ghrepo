@@ -1,3 +1,4 @@
+from typing import List
 import pytest
 from ghrepo import GHRepo
 
@@ -120,3 +121,29 @@ def test_parse_url(url: str, repo: GHRepo) -> None:
 def test_parse_bad_url(url: str) -> None:
     with pytest.raises(ValueError):
         GHRepo.parse_url(url)
+
+
+def test_parse_name_only_no_owner() -> None:
+    with pytest.raises(ValueError):
+        GHRepo.parse("headerparser")
+
+
+def test_parse_owner_name_no_default_owner() -> None:
+    assert GHRepo.parse("jwodder/headerparser") == GHRepo("jwodder", "headerparser")
+
+
+def test_parse_name_only_callable_owner() -> None:
+    assert GHRepo.parse("headerparser", lambda: "jwodder") == GHRepo(
+        "jwodder", "headerparser"
+    )
+
+
+def test_parse_owner_name_callable_default_owner() -> None:
+    calls: List[int] = []
+
+    def defowner() -> str:
+        calls.append(1)
+        return "jwodder"
+
+    assert GHRepo.parse("octocat/Hello-World") == GHRepo("octocat", "Hello-World")
+    assert calls == []
