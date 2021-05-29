@@ -1,27 +1,19 @@
 import json
 from pathlib import Path
 from _pytest.capture import CaptureFixture
-from _pytest.fixtures import FixtureRequest
-import pytest
 from ghrepo import GHRepo
 from ghrepo.__main__ import main
 
 THIS_DIR = str(Path(__file__).parent)
 
 
-def test_command(capsys: CaptureFixture[str], request: FixtureRequest) -> None:
-    local_repo = request.config.getoption("--local-repo")
-    if local_repo is None:
-        pytest.skip("--local-repo not set")
+def test_command(capsys: CaptureFixture[str], local_repo: str) -> None:
     main([THIS_DIR])
     output, _ = capsys.readouterr()
     assert output.strip() == local_repo
 
 
-def test_command_json(capsys: CaptureFixture[str], request: FixtureRequest) -> None:
-    local_repo = request.config.getoption("--local-repo")
-    if local_repo is None:
-        pytest.skip("--local-repo not set")
+def test_command_json(capsys: CaptureFixture[str], local_repo: str) -> None:
     owner, _, name = local_repo.partition("/")
     r = GHRepo(owner, name)
     main(["--json", THIS_DIR])
