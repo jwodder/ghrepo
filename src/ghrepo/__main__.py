@@ -22,10 +22,10 @@ def main(argv: Optional[List[str]] = None) -> None:
     args = parser.parse_args(argv)
     try:
         r = get_local_repo(args.dirpath, remote=args.remote)
-    except subprocess.CalledProcessError:
-        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.returncode)
     except ValueError as e:
-        sys.exit(str(e))
+        sys.exit(f"ghrepo: {e}")
     if args.json:
         print(
             json.dumps(

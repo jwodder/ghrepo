@@ -68,7 +68,7 @@ def test_command_non_repo(
 ) -> None:
     with pytest.raises(SystemExit) as excinfo:
         main(opts + [str(tmp_path)])
-    assert excinfo.value.args == (1,)
+    assert isinstance(excinfo.value.args[0], int)
     out, err = capsys.readouterr()
     assert out == ""
     assert err == ""
@@ -90,7 +90,7 @@ def test_command_bad_url(
     with pytest.raises(SystemExit) as excinfo:
         main(opts)
     assert excinfo.value.args == (
-        "Invalid GitHub URL:"
+        "ghrepo: Invalid GitHub URL:"
         " 'git@gist.github.com:cee837802578a4fc8854df60529af98c.git'",
     )
     m.assert_called_once_with(
