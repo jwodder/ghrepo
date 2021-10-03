@@ -1,5 +1,5 @@
-v0.3.0 (in development)
------------------------
+v0.3.0 (2021-10-03)
+-------------------
 - `ghrepo` command: If a git invocation fails, exit with the same return code
   as the subprocess
 - Error messages from the `ghrepo` command are now prefixed with "ghrepo:"
