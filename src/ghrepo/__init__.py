@@ -24,6 +24,8 @@ from typing import Callable, NamedTuple, Optional, Union
 
 __all__ = [
     "GHRepo",
+    "GH_REPO_RGX",
+    "GH_USER_RGX",
     "get_current_branch",
     "get_local_repo",
     "is_git_repo",

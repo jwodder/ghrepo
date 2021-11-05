@@ -111,12 +111,12 @@ accepted, and the resulting ``GHRepo`` instances will have their ``owner`` set
 to the given value.
 
 
-Functions
----------
+Functions & Constants
+---------------------
 
-**Note**: All of these functions require Git to be installed in order to work.
-I am not certain of the minimal viable Git version, but the functions should
-work with any Git as least as far back as version 1.7.
+**Note**: All of the functions require Git to be installed in order to work.  I
+am not certain of the minimal viable Git version, but the functions should work
+with any Git as least as far back as version 1.7.
 
 .. code:: python
 
@@ -142,6 +142,20 @@ repository or if the repository is in a detached HEAD state.
 
 Tests whether the given directory (default: the current directory) is or is
 contained in a Git repository.
+
+.. code:: python
+
+    GH_USER_RGX: str
+
+A regular expression string (unanchored) for a valid GitHub username or
+organization name.
+
+.. code:: python
+
+    GH_REPO_RGX: str
+
+A regular expression string (unanchored) for a valid GitHub repository name
+(without ".git" extension).
 
 
 Command

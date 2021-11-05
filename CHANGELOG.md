@@ -1,6 +1,7 @@
 v0.4.0 (in development)
 -----------------------
 - Support Python 3.10
+- Export and document `GH_USER_RGX` and `GH_REPO_RGX`
 
 v0.3.0 (2021-10-03)
 -------------------
