@@ -3,7 +3,6 @@ from pathlib import Path
 import subprocess
 import sys
 from typing import List
-from _pytest.capture import CaptureFixture
 import pytest
 from pytest_mock import MockerFixture
 from ghrepo import GHRepo
@@ -13,7 +12,7 @@ THIS_DIR = str(Path(__file__).parent)
 
 
 def test_command(
-    capsys: CaptureFixture[str],
+    capsys: pytest.CaptureFixture[str],
     local_repo: str,
     mocker: MockerFixture,
     monkeypatch: pytest.MonkeyPatch,
@@ -35,7 +34,7 @@ def test_command(
 
 
 def test_command_json_dir(
-    capsys: CaptureFixture[str], local_repo: str, mocker: MockerFixture
+    capsys: pytest.CaptureFixture[str], local_repo: str, mocker: MockerFixture
 ) -> None:
     owner, _, name = local_repo.partition("/")
     r = GHRepo(owner, name)
@@ -64,7 +63,7 @@ def test_command_json_dir(
 
 @pytest.mark.parametrize("opts", [[], ["--json"]])
 def test_command_non_repo(
-    opts: List[str], capsys: CaptureFixture[str], tmp_path: Path
+    opts: List[str], capsys: pytest.CaptureFixture[str], tmp_path: Path
 ) -> None:
     with pytest.raises(SystemExit) as excinfo:
         main(opts + [str(tmp_path)])
@@ -76,7 +75,7 @@ def test_command_non_repo(
 
 @pytest.mark.parametrize("opts", [[], ["--json"]])
 def test_command_bad_url(
-    opts: List[str], capsys: CaptureFixture[str], mocker: MockerFixture
+    opts: List[str], capsys: pytest.CaptureFixture[str], mocker: MockerFixture
 ) -> None:
     m = mocker.patch(
         "subprocess.run",
@@ -105,7 +104,9 @@ def test_command_bad_url(
     assert err == ""
 
 
-def test_command_remote(capsys: CaptureFixture[str], mocker: MockerFixture) -> None:
+def test_command_remote(
+    capsys: pytest.CaptureFixture[str], mocker: MockerFixture
+) -> None:
     m = mocker.patch(
         "subprocess.run",
         return_value=subprocess.CompletedProcess(
