@@ -1,5 +1,5 @@
-v0.4.1 (in development)
------------------------
+v0.4.1 (2022-07-04)
+-------------------
 - Do not accept repository names that end in "`.git`" with alternate casings
 
 v0.4.0 (2021-11-05)
