@@ -3,21 +3,19 @@ from pathlib import Path
 import subprocess
 import sys
 from typing import List
+from conftest import TmpRepo
 import pytest
 from pytest_mock import MockerFixture
-from ghrepo import GHRepo
 from ghrepo.__main__ import main
-
-THIS_DIR = str(Path(__file__).parent)
 
 
 def test_command(
     capsys: pytest.CaptureFixture[str],
-    local_repo: str,
+    tmp_repo: TmpRepo,
     mocker: MockerFixture,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.chdir(THIS_DIR)
+    monkeypatch.chdir(tmp_repo.path)
     monkeypatch.setattr(sys, "argv", ["ghrepo"])
     spy = mocker.spy(subprocess, "run")
     main()
@@ -29,29 +27,28 @@ def test_command(
         check=True,
     )
     out, err = capsys.readouterr()
-    assert out.strip() == local_repo
+    assert out.strip() == str(tmp_repo.remotes["origin"])
     assert err == ""
 
 
 def test_command_json_dir(
-    capsys: pytest.CaptureFixture[str], local_repo: str, mocker: MockerFixture
+    capsys: pytest.CaptureFixture[str], tmp_repo: TmpRepo, mocker: MockerFixture
 ) -> None:
-    owner, _, name = local_repo.partition("/")
-    r = GHRepo(owner, name)
+    r = tmp_repo.remotes["origin"]
     spy = mocker.spy(subprocess, "run")
-    main(["--json", THIS_DIR])
+    main(["--json", str(tmp_repo.path)])
     spy.assert_called_once_with(
         ["git", "remote", "get-url", "origin"],
-        cwd=THIS_DIR,
+        cwd=str(tmp_repo.path),
         stdout=subprocess.PIPE,
         universal_newlines=True,
         check=True,
     )
     out, err = capsys.readouterr()
     assert json.loads(out) == {
-        "owner": owner,
-        "name": name,
-        "fullname": local_repo,
+        "owner": r.owner,
+        "name": r.name,
+        "fullname": str(r),
         "api_url": r.api_url,
         "clone_url": r.clone_url,
         "git_url": r.git_url,

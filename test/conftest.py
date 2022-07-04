@@ -1,14 +1,37 @@
+from pathlib import Path
+import subprocess
+from typing import Dict, NamedTuple
 import pytest
+from ghrepo import GHRepo
 
 
-def pytest_addoption(parser: pytest.Parser) -> None:
-    parser.addoption("--local-repo")
+class TmpRepo(NamedTuple):
+    path: Path
+    branch: str
+    remotes: Dict[str, GHRepo]
 
 
-@pytest.fixture
-def local_repo(request: pytest.FixtureRequest) -> str:
-    lr = request.config.getoption("--local-repo")
-    if lr is None:
-        pytest.skip("--local-repo not set")
-    assert isinstance(lr, str)
-    return lr
+@pytest.fixture(scope="session")
+def tmp_repo(tmp_path_factory: pytest.TempPathFactory) -> TmpRepo:
+    tmp_path = tmp_path_factory.mktemp("tmp_repo")
+    BRANCH = "trunk"
+    REMOTES = {
+        "origin": GHRepo("octocat", "repository"),
+        "upstream": GHRepo("foobar", "repo"),
+    }
+    subprocess.run(
+        ["git", "-c", f"init.defaultBranch={BRANCH}", "init"],
+        check=True,
+        cwd=str(tmp_path),
+    )
+    subprocess.run(
+        ["git", "remote", "add", "origin", REMOTES["origin"].ssh_url],
+        check=True,
+        cwd=str(tmp_path),
+    )
+    subprocess.run(
+        ["git", "remote", "add", "upstream", REMOTES["upstream"].clone_url],
+        check=True,
+        cwd=str(tmp_path),
+    )
+    return TmpRepo(tmp_path, BRANCH, REMOTES)
