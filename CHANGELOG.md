@@ -1,3 +1,7 @@
+v0.4.1 (in development)
+-----------------------
+- Do not accept repository names that end in "`.git`" with alternate casings
+
 v0.4.0 (2021-11-05)
 -------------------
 - Support Python 3.10

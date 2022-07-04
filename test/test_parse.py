@@ -82,6 +82,8 @@ BAD_REPOS = [
     "/repo",
     "none/repo",
     "jwodder/headerparser.git",
+    "jwodder/headerparser.GIT",
+    "jwodder/headerparser.Git",
     "jwodder/",
     "https://api.github.com/repos/jwodder/headerparser.git",
     "https://api.github.com/repos/jwodder/headerparser.git/",

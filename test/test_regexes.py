@@ -99,6 +99,8 @@ def test_good_repos(repo: str) -> None:
         ".git",
         "",
         "steven.git",
+        "steven.GIT",
+        "steven.Git",
     ],
 )
 def test_bad_repos(repo: str) -> None:

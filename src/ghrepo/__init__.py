@@ -11,7 +11,7 @@ repository inspection functions.
 Visit <https://github.com/jwodder/ghrepo> for more information.
 """
 
-__version__ = "0.4.0"
+__version__ = "0.4.1.dev1"
 __author__ = "John Thorvald Wodder II"
 __author_email__ = "ghrepo@varonathe.org"
 __license__ = "MIT"
@@ -50,22 +50,24 @@ GH_USER_RGX = r"(?![Nn][Oo][Nn][Ee]($|[^-A-Za-z0-9]))[-_A-Za-z0-9]+"
 #: 2017-05-21 indicates that repository names can be composed of alphanumeric
 #: ASCII characters, hyphens, periods, and/or underscores, with the names ``.``
 #: and ``..`` being reserved and names ending with ``.git`` forbidden.
-GH_REPO_RGX = r"(?:\.?[-A-Za-z0-9_][-A-Za-z0-9_.]*|\.\.[-A-Za-z0-9_.]+)(?<!\.git)"
+GH_REPO_RGX = (
+    r"(?:\.?[-A-Za-z0-9_][-A-Za-z0-9_.]*|\.\.[-A-Za-z0-9_.]+)(?<!\.[Gg][Ii][Tt])"
+)
 
 #: Convenience regular expression for ``<owner>/<name>``, including named
 #: capturing groups
-OWNER_NAME = fr"(?P<owner>{GH_USER_RGX})/(?P<name>{GH_REPO_RGX})"
+OWNER_NAME = rf"(?P<owner>{GH_USER_RGX})/(?P<name>{GH_REPO_RGX})"
 
-OWNER_REPO_CRGX = re.compile(fr"(?:(?P<owner>{GH_USER_RGX})/)?(?P<name>{GH_REPO_RGX})")
+OWNER_REPO_CRGX = re.compile(rf"(?:(?P<owner>{GH_USER_RGX})/)?(?P<name>{GH_REPO_RGX})")
 
 GITHUB_URL_CREGEXEN = [
     re.compile(
         r"(?:https?://(?:[^@:/]+(?::[^@/]+)?@)?)?(?:www\.)?github\.com/"
-        fr"{OWNER_NAME}(?:\.git)?/?"
+        rf"{OWNER_NAME}(?:\.git)?/?"
     ),
-    re.compile(fr"(?:https?://)?api\.github\.com/repos/{OWNER_NAME}"),
-    re.compile(fr"git://github\.com/{OWNER_NAME}(?:\.git)?"),
-    re.compile(fr"(?:ssh://)?git@github\.com:{OWNER_NAME}(?:\.git)?"),
+    re.compile(rf"(?:https?://)?api\.github\.com/repos/{OWNER_NAME}"),
+    re.compile(rf"git://github\.com/{OWNER_NAME}(?:\.git)?"),
+    re.compile(rf"(?:ssh://)?git@github\.com:{OWNER_NAME}(?:\.git)?"),
 ]
 
 
