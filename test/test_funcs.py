@@ -1,4 +1,5 @@
 from pathlib import Path
+import shutil
 from conftest import TmpRepo
 import pytest
 from ghrepo import get_current_branch, get_local_repo, is_git_repo
@@ -10,6 +11,7 @@ def test_is_git_repo(monkeypatch: pytest.MonkeyPatch, tmp_repo: TmpRepo) -> None
     assert is_git_repo()
 
 
+@pytest.mark.skipif(shutil.which("git") is None, reason="Git not installed")
 def test_is_not_git_repo(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     assert not is_git_repo(tmp_path)
     monkeypatch.chdir(tmp_path)

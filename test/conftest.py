@@ -1,4 +1,5 @@
 from pathlib import Path
+import shutil
 import subprocess
 from typing import Dict, NamedTuple
 import pytest
@@ -13,6 +14,8 @@ class TmpRepo(NamedTuple):
 
 @pytest.fixture(scope="session")
 def tmp_repo(tmp_path_factory: pytest.TempPathFactory) -> TmpRepo:
+    if shutil.which("git") is None:
+        pytest.skip("Git not installed")
     tmp_path = tmp_path_factory.mktemp("tmp_repo")
     BRANCH = "trunk"
     REMOTES = {
