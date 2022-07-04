@@ -1,3 +1,7 @@
+v0.5.0 (in development)
+-----------------------
+- Make `get_local_repo()` handle remote names that start with a hyphen
+
 v0.4.1 (2022-07-04)
 -------------------
 - Do not accept repository names that end in "`.git`" with alternate casings

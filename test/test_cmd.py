@@ -20,7 +20,7 @@ def test_command(
     spy = mocker.spy(subprocess, "run")
     main()
     spy.assert_called_once_with(
-        ["git", "remote", "get-url", "origin"],
+        ["git", "remote", "get-url", "--", "origin"],
         cwd=None,
         stdout=subprocess.PIPE,
         universal_newlines=True,
@@ -38,7 +38,7 @@ def test_command_json_dir(
     spy = mocker.spy(subprocess, "run")
     main(["--json", str(tmp_repo.path)])
     spy.assert_called_once_with(
-        ["git", "remote", "get-url", "origin"],
+        ["git", "remote", "get-url", "--", "origin"],
         cwd=str(tmp_repo.path),
         stdout=subprocess.PIPE,
         universal_newlines=True,
@@ -77,7 +77,7 @@ def test_command_bad_url(
     m = mocker.patch(
         "subprocess.run",
         return_value=subprocess.CompletedProcess(
-            args=["git", "remote", "get-url", "origin"],
+            args=["git", "remote", "get-url", "--", "origin"],
             returncode=0,
             stdout="git@gist.github.com:cee837802578a4fc8854df60529af98c.git\n",
             stderr=None,
@@ -90,7 +90,7 @@ def test_command_bad_url(
         " 'git@gist.github.com:cee837802578a4fc8854df60529af98c.git'",
     )
     m.assert_called_once_with(
-        ["git", "remote", "get-url", "origin"],
+        ["git", "remote", "get-url", "--", "origin"],
         cwd=None,
         stdout=subprocess.PIPE,
         universal_newlines=True,
@@ -107,7 +107,7 @@ def test_command_remote(
     m = mocker.patch(
         "subprocess.run",
         return_value=subprocess.CompletedProcess(
-            args=["git", "remote", "get-url", "upstream"],
+            args=["git", "remote", "get-url", "--", "upstream"],
             returncode=0,
             stdout="git@github.com:jwodder/daemail.git\n",
             stderr=None,
@@ -115,7 +115,7 @@ def test_command_remote(
     )
     main(["--remote", "upstream"])
     m.assert_called_once_with(
-        ["git", "remote", "get-url", "upstream"],
+        ["git", "remote", "get-url", "--", "upstream"],
         cwd=None,
         stdout=subprocess.PIPE,
         universal_newlines=True,
