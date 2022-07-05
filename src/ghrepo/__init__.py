@@ -202,8 +202,8 @@ def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
 
 def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
     """
-    Tests whether the given directory (default: the current directory) is or is
-    contained in a Git repository.
+    Tests whether the given directory (default: the current directory) is
+    either a Git repository or contained in one
     """
     r = subprocess.run(
         ["git", "rev-parse", "--git-dir"],

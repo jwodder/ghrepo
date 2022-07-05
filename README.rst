@@ -140,8 +140,8 @@ repository or if the repository is in a detached HEAD state.
 
     is_git_repo(dirpath: Optional[AnyPath] = None) -> bool
 
-Tests whether the given directory (default: the current directory) is or is
-contained in a Git repository.
+Tests whether the given directory (default: the current directory) is either a
+Git repository or contained in one
 
 .. code:: python
 
