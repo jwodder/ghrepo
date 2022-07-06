@@ -2,7 +2,7 @@ from pathlib import Path
 import shutil
 from conftest import TmpRepo
 import pytest
-from ghrepo import get_current_branch, get_local_repo, is_git_repo
+from ghrepo import get_branch_upstream, get_current_branch, get_local_repo, is_git_repo
 
 
 def test_is_git_repo(monkeypatch: pytest.MonkeyPatch, tmp_repo: TmpRepo) -> None:
@@ -32,3 +32,11 @@ def test_get_local_repo(monkeypatch: pytest.MonkeyPatch, tmp_repo: TmpRepo) -> N
     monkeypatch.chdir(tmp_repo.path)
     assert get_local_repo() == tmp_repo.remotes["origin"]
     assert get_local_repo(remote="upstream") == tmp_repo.remotes["upstream"]
+
+
+def test_get_branch_upstream(
+    monkeypatch: pytest.MonkeyPatch, tmp_repo: TmpRepo
+) -> None:
+    assert get_branch_upstream("draft", tmp_repo.path) == tmp_repo.upstreams["draft"]
+    monkeypatch.chdir(tmp_repo.path)
+    assert get_branch_upstream("draft") == tmp_repo.upstreams["draft"]

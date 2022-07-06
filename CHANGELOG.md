@@ -1,6 +1,7 @@
 v0.5.0 (in development)
 -----------------------
 - Make `get_local_repo()` handle remote names that start with a hyphen
+- Add a `get_branch_upstream()` function
 
 v0.4.1 (2022-07-04)
 -------------------

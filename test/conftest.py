@@ -10,6 +10,7 @@ class TmpRepo(NamedTuple):
     path: Path
     branch: str
     remotes: Dict[str, GHRepo]
+    upstreams: Dict[str, GHRepo]
 
 
 @pytest.fixture(scope="session")
@@ -37,4 +38,9 @@ def tmp_repo(tmp_path_factory: pytest.TempPathFactory) -> TmpRepo:
         check=True,
         cwd=str(tmp_path),
     )
-    return TmpRepo(tmp_path, BRANCH, REMOTES)
+    subprocess.run(
+        ["git", "config", "branch.draft.remote", "upstream"],
+        check=True,
+        cwd=str(tmp_path),
+    )
+    return TmpRepo(tmp_path, BRANCH, REMOTES, {"draft": REMOTES["upstream"]})

@@ -125,7 +125,18 @@ with any Git as least as far back as version 1.7.
 Determine the GitHub repository for the Git repository located at or containing
 the directory ``dirpath`` (default: the current directory) by parsing the URL
 for the specified remote.  Raises a ``subprocess.CalledProcessError`` if the
-given path is not in a GitHub repository.
+given path is not in a GitHub repository or the given remote does not exist.
+
+.. code:: python
+
+    get_branch_upstream(branch: str, dirpath: Optional[AnyPath] = None) -> GHRepo
+
+*(New in version 0.5.0)* Determine the GitHub repository for the upstream
+remote of the given branch in the Git repository located at or containing the
+directory ``dirpath`` (default: the current directory).
+
+Raises a ``subprocess.CalledProcessError`` if the given path is not in a GitHub
+repository or the given branch does not have an upstream remote configured.
 
 .. code:: python
 
