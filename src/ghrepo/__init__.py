@@ -11,7 +11,7 @@ repository inspection functions.
 Visit <https://github.com/jwodder/ghrepo> for more information.
 """
 
-__version__ = "0.5.0"
+__version__ = "0.6.0.dev1"
 __author__ = "John Thorvald Wodder II"
 __author_email__ = "ghrepo@varonathe.org"
 __license__ = "MIT"
@@ -174,14 +174,8 @@ def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") ->
     `subprocess.CalledProcessError` if the given path is not in a GitHub
     repository or the given remote does not exist.
     """
-    r = subprocess.run(
-        ["git", "remote", "get-url", "--", remote],
-        cwd=dirpath,
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-        check=True,
-    )
-    return GHRepo.parse_url(r.stdout.strip())
+    url = readgit("remote", "get-url", "--", remote, dirpath=dirpath)
+    return GHRepo.parse_url(url)
 
 
 def get_branch_upstream(branch: str, dirpath: Optional[AnyPath] = None) -> GHRepo:
@@ -196,13 +190,9 @@ def get_branch_upstream(branch: str, dirpath: Optional[AnyPath] = None) -> GHRep
     GitHub repository or the given branch does not have an upstream remote
     configured.
     """
-    upstream = subprocess.run(
-        ["git", "config", "--get", "--", f"branch.{branch}.remote"],
-        cwd=dirpath,
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-        check=True,
-    ).stdout.strip()
+    upstream = readgit(
+        "config", "--get", "--", f"branch.{branch}.remote", dirpath=dirpath
+    )
     return get_local_repo(dirpath, remote=upstream)
 
 
@@ -213,13 +203,7 @@ def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
     `subprocess.CalledProcessError` if the given path is not in a GitHub
     repository or if the repository is in a detached HEAD state.
     """
-    return subprocess.run(
-        ["git", "symbolic-ref", "--short", "-q", "HEAD"],
-        cwd=dirpath,
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-        check=True,
-    ).stdout.strip()
+    return readgit("symbolic-ref", "--short", "-q", "HEAD", dirpath=dirpath)
 
 
 def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
@@ -234,3 +218,13 @@ def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
         stderr=subprocess.DEVNULL,
     )
     return bool(r.returncode == 0)
+
+
+def readgit(*args: str, dirpath: Optional[AnyPath]) -> str:
+    return subprocess.run(
+        ["git", *args],
+        cwd=dirpath,
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+        check=True,
+    ).stdout.strip()
