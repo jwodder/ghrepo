@@ -1,5 +1,5 @@
-v0.6.0 (in development)
------------------------
+v0.6.0 (2022-07-08)
+-------------------
 - `get_local_repo()` now raises a dedicated `NoSuchRemoteError` if the given
   remote does not exist
 - `get_current_branch()` now raises a dedicated `DetachedHeadError` if the
