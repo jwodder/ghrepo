@@ -23,6 +23,7 @@ import subprocess
 from typing import Callable, NamedTuple, Optional, Union
 
 __all__ = [
+    "DetachedHeadError",
     "GHRepo",
     "GH_REPO_RGX",
     "GH_USER_RGX",
@@ -174,7 +175,7 @@ def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") ->
     containing the directory ``dirpath`` (default: the current directory) by
     parsing the URL for the specified remote.  Raises `NoSuchRemoteError` if
     the given remote does not exist.  Raises `subprocess.CalledProcessError` if
-    a different Git error occurs, such as the given path not being in a GitHub
+    a different Git error occurs, such as the given path not being in a Git
     repository.
     """
     try:
@@ -208,11 +209,18 @@ def get_branch_upstream(branch: str, dirpath: Optional[AnyPath] = None) -> GHRep
 def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
     """
     Get the current branch for the Git repository located at or containing the
-    directory ``dirpath`` (default: the current directory).  Raises a
-    `subprocess.CalledProcessError` if the given path is not in a GitHub
-    repository or if the repository is in a detached HEAD state.
+    directory ``dirpath`` (default: the current directory).  Raises
+    `DetachedHeadError` if the repository is in a detached ``HEAD`` state.
+    Raises `subprocess.CalledProcessError` if a different Git error occurs,
+    such as the given path not being in a Git repository.
     """
-    return readgit("symbolic-ref", "--short", "-q", "HEAD", dirpath=dirpath)
+    try:
+        return readgit("symbolic-ref", "--short", "-q", "HEAD", dirpath=dirpath)
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 1:
+            raise DetachedHeadError()
+        else:
+            raise
 
 
 def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
@@ -242,7 +250,7 @@ def readgit(*args: str, dirpath: Optional[AnyPath]) -> str:
 class NoSuchRemoteError(Exception):
     """
     Raised by `get_local_repo()` when the given remote does not exist in the
-    GitHub repository
+    Git repository
     """
 
     def __init__(self, remote: str) -> None:
@@ -251,3 +259,13 @@ class NoSuchRemoteError(Exception):
 
     def __str__(self) -> str:
         return f"Remote not found in Git repository: {self.remote!r}"
+
+
+class DetachedHeadError(Exception):
+    """
+    Raised by `get_current_branch()` if the Git repository is in a detached
+    ``HEAD`` state
+    """
+
+    def __str__(self) -> str:
+        return "Git repository is in a detached HEAD state"

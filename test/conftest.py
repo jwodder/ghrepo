@@ -12,6 +12,18 @@ class TmpRepo(NamedTuple):
     remotes: Dict[str, GHRepo]
     upstreams: Dict[str, GHRepo]
 
+    def run(self, *args: str) -> None:
+        subprocess.run(["git", *args], check=True, cwd=self.path)
+
+    def detach(self) -> None:
+        (self.path / "file.txt").write_text("This is test text\n")
+        self.run("add", "file.txt")
+        self.run("commit", "-m", "Add a file")
+        (self.path / "file2.txt").write_text("This is also text\n")
+        self.run("add", "file2.txt")
+        self.run("commit", "-m", "Add another file")
+        self.run("checkout", "HEAD^")
+
 
 @pytest.fixture(scope="session")
 def tmp_repo(tmp_path_factory: pytest.TempPathFactory) -> TmpRepo:

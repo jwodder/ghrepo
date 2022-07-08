@@ -127,7 +127,7 @@ the directory ``dirpath`` (default: the current directory) by parsing the URL
 for the specified remote.  parsing the URL for the specified remote.  Raises
 ``NoSuchRemoteError`` if the given remote does not exist.  Raises
 ``subprocess.CalledProcessError`` if a different Git error occurs, such as the
-given path not being in a GitHub repository.
+given path not being in a Git repository.
 
 .. code:: python
 
@@ -137,7 +137,7 @@ given path not being in a GitHub repository.
 remote of the given branch in the Git repository located at or containing the
 directory ``dirpath`` (default: the current directory).
 
-Raises a ``subprocess.CalledProcessError`` if the given path is not in a GitHub
+Raises a ``subprocess.CalledProcessError`` if the given path is not in a Git
 repository or the given branch does not have an upstream remote configured.
 
 .. code:: python
@@ -145,9 +145,10 @@ repository or the given branch does not have an upstream remote configured.
     get_current_branch(dirpath: Optional[AnyPath] = None) -> str
 
 Get the current branch for the Git repository located at or containing the
-directory ``dirpath`` (default: the current directory).  Raises a
-``subprocess.CalledProcessError`` if the given path is not in a GitHub
-repository or if the repository is in a detached HEAD state.
+directory ``dirpath`` (default: the current directory).  Raises
+``DetachedHeadError`` if the repository is in a detached ``HEAD`` state.
+Raises ``subprocess.CalledProcessError`` if a different Git error occurs, such
+as the given path not being in a Git repository.
 
 .. code:: python
 
@@ -173,6 +174,13 @@ A regular expression string (unanchored) for a valid GitHub repository name
 
 Exceptions
 ----------
+
+.. code:: python
+
+    class DetachedHeadError(Exception)
+
+Raised by ``get_current_branch()`` if the Git repository is in a detached
+``HEAD`` state
 
 .. code:: python
 

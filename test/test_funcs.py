@@ -3,6 +3,7 @@ import shutil
 from conftest import TmpRepo
 import pytest
 from ghrepo import (
+    DetachedHeadError,
     NoSuchRemoteError,
     get_branch_upstream,
     get_current_branch,
@@ -28,6 +29,13 @@ def test_get_current_branch(monkeypatch: pytest.MonkeyPatch, tmp_repo: TmpRepo) 
     assert get_current_branch(tmp_repo.path) == tmp_repo.branch
     monkeypatch.chdir(tmp_repo.path)
     assert get_current_branch() == tmp_repo.branch
+
+
+def test_get_current_branch_detached(tmp_repo: TmpRepo) -> None:
+    tmp_repo.detach()
+    with pytest.raises(DetachedHeadError) as excinfo:
+        get_current_branch(tmp_repo.path)
+    assert str(excinfo.value) == "Git repository is in a detached HEAD state"
 
 
 def test_get_local_repo(monkeypatch: pytest.MonkeyPatch, tmp_repo: TmpRepo) -> None:
