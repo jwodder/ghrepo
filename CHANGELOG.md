@@ -4,6 +4,8 @@ v0.6.0 (in development)
   remote does not exist
 - `get_current_branch()` now raises a dedicated `DetachedHeadError` if the
   repository is in a detached `HEAD` state
+- `get_branch_upstream()` now raises a dedicated `NoUpstreamError` if the given
+  branch does not have an upstream configured
 
 v0.5.0 (2022-07-06)
 -------------------

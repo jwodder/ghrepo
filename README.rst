@@ -137,8 +137,10 @@ given path not being in a Git repository.
 remote of the given branch in the Git repository located at or containing the
 directory ``dirpath`` (default: the current directory).
 
-Raises a ``subprocess.CalledProcessError`` if the given path is not in a Git
-repository or the given branch does not have an upstream remote configured.
+Raises ``NoUpstreamError`` if the given branch does not have an upstream remote
+configured (This includes the situation in which the branch does not exist).
+Raises ``subprocess.CalledProcessError`` if a different Git error occurs, such
+as the given path not being in a Git repository.
 
 .. code:: python
 
@@ -179,16 +181,24 @@ Exceptions
 
     class DetachedHeadError(Exception)
 
-Raised by ``get_current_branch()`` if the Git repository is in a detached
-``HEAD`` state
+*(New in version 0.6.0)* Raised by ``get_current_branch()`` if the Git
+repository is in a detached ``HEAD`` state
 
 .. code:: python
 
     class NoSuchRemoteError(Exception)
 
-Raised by ``get_local_repo()`` when the given remote does not exist in the
-GitHub repository.  The queried remote is available as the ``remote``
-attribute.
+*(New in version 0.6.0)* Raised by ``get_local_repo()`` when the given remote
+does not exist in the GitHub repository.  The queried remote is available as
+the ``remote`` attribute.
+
+.. code:: python
+
+    class NoUpstreamError(Exception)
+
+*(New in version 0.6.0)* Raised by ``get_branch_upstream()`` if the given
+branch does not have a remote configured.  The queried branch is available as
+the ``branch`` attribute.
 
 
 Command

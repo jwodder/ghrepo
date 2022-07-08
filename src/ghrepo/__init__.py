@@ -28,6 +28,7 @@ __all__ = [
     "GH_REPO_RGX",
     "GH_USER_RGX",
     "NoSuchRemoteError",
+    "NoUpstreamError",
     "get_current_branch",
     "get_local_repo",
     "is_git_repo",
@@ -196,13 +197,20 @@ def get_branch_upstream(branch: str, dirpath: Optional[AnyPath] = None) -> GHRep
     in the Git repository located at or containing the directory ``dirpath``
     (default: the current directory).
 
-    Raises a `subprocess.CalledProcessError` if the given path is not in a
-    GitHub repository or the given branch does not have an upstream remote
-    configured.
+    Raises `NoUpstreamError` if the given branch does not have an upstream
+    remote configured (This includes the situation in which the branch does not
+    exist).  Raises `subprocess.CalledProcessError` if a different Git error
+    occurs, such as the given path not being in a Git repository.
     """
-    upstream = readgit(
-        "config", "--get", "--", f"branch.{branch}.remote", dirpath=dirpath
-    )
+    try:
+        upstream = readgit(
+            "config", "--get", "--", f"branch.{branch}.remote", dirpath=dirpath
+        )
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 1:
+            raise NoUpstreamError(branch)
+        else:
+            raise  # pragma: no cover
     return get_local_repo(dirpath, remote=upstream)
 
 
@@ -220,7 +228,7 @@ def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
         if e.returncode == 1:
             raise DetachedHeadError()
         else:
-            raise
+            raise  # pragma: no cover
 
 
 def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
@@ -269,3 +277,17 @@ class DetachedHeadError(Exception):
 
     def __str__(self) -> str:
         return "Git repository is in a detached HEAD state"
+
+
+class NoUpstreamError(Exception):
+    """
+    Raised by `get_branch_upstream()` if the given branch does not have a
+    remote configured
+    """
+
+    def __init__(self, branch: str) -> None:
+        #: The branch in question
+        self.branch = branch
+
+    def __str__(self) -> str:
+        return f"No upstream remote configured for Git branch: {self.branch!r}"

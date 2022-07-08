@@ -5,6 +5,7 @@ import pytest
 from ghrepo import (
     DetachedHeadError,
     NoSuchRemoteError,
+    NoUpstreamError,
     get_branch_upstream,
     get_current_branch,
     get_local_repo,
@@ -61,3 +62,10 @@ def test_get_branch_upstream(
     assert get_branch_upstream("draft", tmp_repo.path) == tmp_repo.upstreams["draft"]
     monkeypatch.chdir(tmp_repo.path)
     assert get_branch_upstream("draft") == tmp_repo.upstreams["draft"]
+
+
+def test_get_branch_upstream_no_remote(tmp_repo: TmpRepo) -> None:
+    with pytest.raises(NoUpstreamError) as excinfo:
+        get_branch_upstream("main", tmp_repo.path)
+    assert excinfo.value.branch == "main"
+    assert str(excinfo.value) == "No upstream remote configured for Git branch: 'main'"
