@@ -2,7 +2,13 @@ from pathlib import Path
 import shutil
 from conftest import TmpRepo
 import pytest
-from ghrepo import get_branch_upstream, get_current_branch, get_local_repo, is_git_repo
+from ghrepo import (
+    NoSuchRemoteError,
+    get_branch_upstream,
+    get_current_branch,
+    get_local_repo,
+    is_git_repo,
+)
 
 
 def test_is_git_repo(monkeypatch: pytest.MonkeyPatch, tmp_repo: TmpRepo) -> None:
@@ -32,6 +38,13 @@ def test_get_local_repo(monkeypatch: pytest.MonkeyPatch, tmp_repo: TmpRepo) -> N
     monkeypatch.chdir(tmp_repo.path)
     assert get_local_repo() == tmp_repo.remotes["origin"]
     assert get_local_repo(remote="upstream") == tmp_repo.remotes["upstream"]
+
+
+def test_get_local_repo_no_such_remote(tmp_repo: TmpRepo) -> None:
+    with pytest.raises(NoSuchRemoteError) as excinfo:
+        get_local_repo(tmp_repo.path, "downstream")
+    assert excinfo.value.remote == "downstream"
+    assert str(excinfo.value) == "Remote not found in Git repository: 'downstream'"
 
 
 def test_get_branch_upstream(

@@ -124,8 +124,10 @@ with any Git as least as far back as version 1.7.
 
 Determine the GitHub repository for the Git repository located at or containing
 the directory ``dirpath`` (default: the current directory) by parsing the URL
-for the specified remote.  Raises a ``subprocess.CalledProcessError`` if the
-given path is not in a GitHub repository or the given remote does not exist.
+for the specified remote.  parsing the URL for the specified remote.  Raises
+``NoSuchRemoteError`` if the given remote does not exist.  Raises
+``subprocess.CalledProcessError`` if a different Git error occurs, such as the
+given path not being in a GitHub repository.
 
 .. code:: python
 
@@ -167,6 +169,18 @@ organization name.
 
 A regular expression string (unanchored) for a valid GitHub repository name
 (without ".git" extension).
+
+
+Exceptions
+----------
+
+.. code:: python
+
+    class NoSuchRemoteError(Exception)
+
+Raised by ``get_local_repo()`` when the given remote does not exist in the
+GitHub repository.  The queried remote is available as the ``remote``
+attribute.
 
 
 Command

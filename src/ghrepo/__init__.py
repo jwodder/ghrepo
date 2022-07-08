@@ -26,6 +26,7 @@ __all__ = [
     "GHRepo",
     "GH_REPO_RGX",
     "GH_USER_RGX",
+    "NoSuchRemoteError",
     "get_current_branch",
     "get_local_repo",
     "is_git_repo",
@@ -49,7 +50,8 @@ GH_USER_RGX = r"(?![Nn][Oo][Nn][Ee]($|[^-A-Za-z0-9]))[-_A-Za-z0-9]+"
 #: Regular expression for a valid GitHub repository name.  Testing as of
 #: 2017-05-21 indicates that repository names can be composed of alphanumeric
 #: ASCII characters, hyphens, periods, and/or underscores, with the names ``.``
-#: and ``..`` being reserved and names ending with ``.git`` forbidden.
+#: and ``..`` being reserved and names ending with ``.git`` (case insensitive)
+#: forbidden.
 GH_REPO_RGX = (
     r"(?:\.?[-A-Za-z0-9_][-A-Za-z0-9_.]*|\.\.[-A-Za-z0-9_.]+)(?<!\.[Gg][Ii][Tt])"
 )
@@ -170,11 +172,18 @@ def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") ->
     """
     Determine the GitHub repository for the Git repository located at or
     containing the directory ``dirpath`` (default: the current directory) by
-    parsing the URL for the specified remote.  Raises a
-    `subprocess.CalledProcessError` if the given path is not in a GitHub
-    repository or the given remote does not exist.
+    parsing the URL for the specified remote.  Raises `NoSuchRemoteError` if
+    the given remote does not exist.  Raises `subprocess.CalledProcessError` if
+    a different Git error occurs, such as the given path not being in a GitHub
+    repository.
     """
-    url = readgit("remote", "get-url", "--", remote, dirpath=dirpath)
+    try:
+        url = readgit("remote", "get-url", "--", remote, dirpath=dirpath)
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 2:
+            raise NoSuchRemoteError(remote)
+        else:
+            raise
     return GHRepo.parse_url(url)
 
 
@@ -228,3 +237,17 @@ def readgit(*args: str, dirpath: Optional[AnyPath]) -> str:
         universal_newlines=True,
         check=True,
     ).stdout.strip()
+
+
+class NoSuchRemoteError(Exception):
+    """
+    Raised by `get_local_repo()` when the given remote does not exist in the
+    GitHub repository
+    """
+
+    def __init__(self, remote: str) -> None:
+        #: The queried remote
+        self.remote = remote
+
+    def __str__(self) -> str:
+        return f"Remote not found in Git repository: {self.remote!r}"
