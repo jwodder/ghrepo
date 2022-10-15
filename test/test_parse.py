@@ -1,4 +1,4 @@
-from typing import List
+from __future__ import annotations
 import pytest
 from ghrepo import GHRepo
 
@@ -141,7 +141,7 @@ def test_parse_name_only_callable_owner() -> None:
 
 
 def test_parse_owner_name_callable_default_owner() -> None:
-    calls: List[int] = []
+    calls: list[int] = []
 
     def defowner() -> str:
         calls.append(1)

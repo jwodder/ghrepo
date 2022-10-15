@@ -1,12 +1,13 @@
+from __future__ import annotations
 import argparse
 import json
 import subprocess
 import sys
-from typing import List, Optional
+from typing import Optional
 from . import __version__, get_local_repo
 
 
-def main(argv: Optional[List[str]] = None) -> None:
+def main(argv: Optional[list[str]] = None) -> None:
     parser = argparse.ArgumentParser(description="Show current GitHub repository")
     parser.add_argument("-J", "--json", action="store_true", help="Output JSON")
     parser.add_argument(

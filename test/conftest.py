@@ -1,7 +1,8 @@
+from __future__ import annotations
 from pathlib import Path
 import shutil
 import subprocess
-from typing import Dict, NamedTuple
+from typing import NamedTuple
 import pytest
 from ghrepo import GHRepo
 
@@ -9,8 +10,8 @@ from ghrepo import GHRepo
 class TmpRepo(NamedTuple):
     path: Path
     branch: str
-    remotes: Dict[str, GHRepo]
-    upstreams: Dict[str, GHRepo]
+    remotes: dict[str, GHRepo]
+    upstreams: dict[str, GHRepo]
 
     def run(self, *args: str) -> None:
         subprocess.run(["git", *args], check=True, cwd=self.path)

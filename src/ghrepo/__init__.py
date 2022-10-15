@@ -11,16 +11,18 @@ repository inspection functions.
 Visit <https://github.com/jwodder/ghrepo> for more information.
 """
 
+from __future__ import annotations
+from collections.abc import Callable
+from os import PathLike
+import re
+import subprocess
+from typing import NamedTuple, Optional, Union
+
 __version__ = "0.7.0.dev1"
 __author__ = "John Thorvald Wodder II"
 __author_email__ = "ghrepo@varonathe.org"
 __license__ = "MIT"
 __url__ = "https://github.com/jwodder/ghrepo"
-
-from os import PathLike
-import re
-import subprocess
-from typing import Callable, NamedTuple, Optional, Union
 
 __all__ = [
     "DetachedHeadError",
@@ -121,8 +123,8 @@ class GHRepo(NamedTuple):
     def parse(
         cls,
         spec: str,
-        default_owner: Optional[Union[str, Callable[[], str]]] = None,
-    ) -> "GHRepo":
+        default_owner: Optional[str | Callable[[], str]] = None,
+    ) -> GHRepo:
         """
         Parse a GitHub repository specifier.  This can be either a URL (as
         accepted by `parse_url()`) or a string in the form ``{owner}/{name}``.
@@ -149,7 +151,7 @@ class GHRepo(NamedTuple):
             return cls.parse_url(spec)
 
     @classmethod
-    def parse_url(cls, url: str) -> "GHRepo":
+    def parse_url(cls, url: str) -> GHRepo:
         """
         Parse a GitHub repository URL.  The following URL formats are
         recognized:

@@ -1,8 +1,8 @@
+from __future__ import annotations
 import json
 from pathlib import Path
 import subprocess
 import sys
-from typing import List
 from conftest import TmpRepo
 import pytest
 from pytest_mock import MockerFixture
@@ -60,7 +60,7 @@ def test_command_json_dir(
 
 @pytest.mark.parametrize("opts", [[], ["--json"]])
 def test_command_non_repo(
-    opts: List[str], capsys: pytest.CaptureFixture[str], tmp_path: Path
+    opts: list[str], capsys: pytest.CaptureFixture[str], tmp_path: Path
 ) -> None:
     with pytest.raises(SystemExit) as excinfo:
         main(opts + [str(tmp_path)])
@@ -72,7 +72,7 @@ def test_command_non_repo(
 
 @pytest.mark.parametrize("opts", [[], ["--json"]])
 def test_command_bad_url(
-    opts: List[str], capsys: pytest.CaptureFixture[str], mocker: MockerFixture
+    opts: list[str], capsys: pytest.CaptureFixture[str], mocker: MockerFixture
 ) -> None:
     m = mocker.patch(
         "subprocess.run",
