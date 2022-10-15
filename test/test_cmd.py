@@ -23,7 +23,7 @@ def test_command(
         ["git", "remote", "get-url", "--", "origin"],
         cwd=None,
         stdout=subprocess.PIPE,
-        universal_newlines=True,
+        text=True,
         check=True,
     )
     out, err = capsys.readouterr()
@@ -41,7 +41,7 @@ def test_command_json_dir(
         ["git", "remote", "get-url", "--", "origin"],
         cwd=str(tmp_repo.path),
         stdout=subprocess.PIPE,
-        universal_newlines=True,
+        text=True,
         check=True,
     )
     out, err = capsys.readouterr()
@@ -93,7 +93,7 @@ def test_command_bad_url(
         ["git", "remote", "get-url", "--", "origin"],
         cwd=None,
         stdout=subprocess.PIPE,
-        universal_newlines=True,
+        text=True,
         check=True,
     )
     out, err = capsys.readouterr()
@@ -118,7 +118,7 @@ def test_command_remote(
         ["git", "remote", "get-url", "--", "upstream"],
         cwd=None,
         stdout=subprocess.PIPE,
-        universal_newlines=True,
+        text=True,
         check=True,
     )
     out, err = capsys.readouterr()

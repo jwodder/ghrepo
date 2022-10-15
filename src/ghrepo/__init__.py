@@ -11,7 +11,7 @@ repository inspection functions.
 Visit <https://github.com/jwodder/ghrepo> for more information.
 """
 
-__version__ = "0.6.0"
+__version__ = "0.7.0.dev1"
 __author__ = "John Thorvald Wodder II"
 __author_email__ = "ghrepo@varonathe.org"
 __license__ = "MIT"
@@ -250,7 +250,7 @@ def readgit(*args: str, dirpath: Optional[AnyPath]) -> str:
         ["git", *args],
         cwd=dirpath,
         stdout=subprocess.PIPE,
-        universal_newlines=True,
+        text=True,
         check=True,
     ).stdout.strip()
 
