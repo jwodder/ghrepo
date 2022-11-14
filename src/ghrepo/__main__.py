@@ -4,7 +4,7 @@ import json
 import subprocess
 import sys
 from typing import Optional
-from . import __version__, get_local_repo
+from . import NoSuchRemoteError, __version__, get_local_repo
 
 
 def main(argv: Optional[list[str]] = None) -> None:
@@ -25,6 +25,8 @@ def main(argv: Optional[list[str]] = None) -> None:
         r = get_local_repo(args.dirpath, remote=args.remote)
     except subprocess.CalledProcessError as e:
         sys.exit(e.returncode)
+    except NoSuchRemoteError:
+        sys.exit(2)
     except ValueError as e:
         sys.exit(f"ghrepo: {e}")
     if args.json:

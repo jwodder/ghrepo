@@ -124,3 +124,30 @@ def test_command_remote(
     out, err = capsys.readouterr()
     assert out == "jwodder/daemail\n"
     assert err == ""
+
+
+def test_command_no_such_remote(
+    capsys: pytest.CaptureFixture[str], mocker: MockerFixture
+) -> None:
+    m = mocker.patch(
+        "subprocess.run",
+        side_effect=subprocess.CalledProcessError(
+            cmd=["git", "remote", "get-url", "--", "upstream"],
+            returncode=2,
+            output="",
+            stderr=None,
+        ),
+    )
+    with pytest.raises(SystemExit) as excinfo:
+        main(["--remote", "upstream"])
+    assert excinfo.value.args == (2,)
+    m.assert_called_once_with(
+        ["git", "remote", "get-url", "--", "upstream"],
+        cwd=None,
+        stdout=subprocess.PIPE,
+        text=True,
+        check=True,
+    )
+    out, err = capsys.readouterr()
+    assert out == ""
+    assert err == ""

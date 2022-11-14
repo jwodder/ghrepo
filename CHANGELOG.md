@@ -7,6 +7,8 @@ v0.7.0 (in development)
 - Correct the accepted format for URLs that start with `ssh://` (They need to
   separate the hostname from the path with a slash rather than a colon)
 - Schemes & hostnames in URLs are now parsed case-insensitively
+- CLI: Don't show superfluous error traceback when the given repo does not
+  possess the given remote
 
 v0.6.0 (2022-07-08)
 -------------------
