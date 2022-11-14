@@ -2,6 +2,11 @@ v0.7.0 (in development)
 -----------------------
 - Drop support for Python 3.6
 - Support Python 3.11
+- Properly follow RFC 3986 when parsing username & password fields in
+  `www.github.com` URLs
+- Correct the accepted format for URLs that start with `ssh://` (They need to
+  separate the hostname from the path with a slash rather than a colon)
+- Schemes & hostnames in URLs are now parsed case-insensitively
 
 v0.6.0 (2022-07-08)
 -------------------

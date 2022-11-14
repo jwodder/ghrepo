@@ -76,12 +76,16 @@ def test_bad_users(name: str) -> None:
         "steven.git.txt",
         "steven.gitt",
         ".gitt",
+        "..gitt",
+        "...gitt",
         "git",
         "-",
         "_",
         "---",
         ".---",
         ".steven",
+        "..steven",
+        "...steven",
     ],
 )
 def test_good_repos(repo: str) -> None:

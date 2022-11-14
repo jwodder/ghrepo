@@ -68,12 +68,13 @@ OWNER_REPO_CRGX = re.compile(rf"(?:(?P<owner>{GH_USER_RGX})/)?(?P<name>{GH_REPO_
 
 GITHUB_URL_CREGEXEN = [
     re.compile(
-        r"(?:https?://(?:[^@:/]+(?::[^@/]+)?@)?)?(?:www\.)?github\.com/"
-        rf"{OWNER_NAME}(?:\.git)?/?"
+        r"(?:(?i:https?)://(?:(?:[A-Za-z0-9-._~!$&'()*+,;=:]|%[0-9a-fA-F]{2})*@)?)?"
+        rf"(?i:(?:www\.)?github\.com)/{OWNER_NAME}(?:\.git)?/?"
     ),
-    re.compile(rf"(?:https?://)?api\.github\.com/repos/{OWNER_NAME}"),
-    re.compile(rf"git://github\.com/{OWNER_NAME}(?:\.git)?"),
-    re.compile(rf"(?:ssh://)?git@github\.com:{OWNER_NAME}(?:\.git)?"),
+    re.compile(rf"(?i:https?://)?(?i:api\.github\.com)/repos/{OWNER_NAME}"),
+    re.compile(rf"(?i:git://github\.com)/{OWNER_NAME}(?:\.git)?"),
+    re.compile(rf"git@(?i:github\.com):{OWNER_NAME}(?:\.git)?"),
+    re.compile(rf"(?i:ssh://)git@(?i:github\.com)/{OWNER_NAME}(?:\.git)?"),
 ]
 
 
@@ -156,11 +157,12 @@ class GHRepo(NamedTuple):
         Parse a GitHub repository URL.  The following URL formats are
         recognized:
 
-        - ``[https://[<username>[:<password>]@]][www.]github.com/<owner>/<name>\
+        - ``[http[s]://[<username>[:<password>]@]][www.]github.com/<owner>/<name>\
           [.git][/]``
-        - ``[https://]api.github.com/repos/<owner>/<name>``
+        - ``[http[s]://]api.github.com/repos/<owner>/<name>``
         - ``git://github.com/<owner>/<name>[.git]``
-        - ``[ssh://]git@github.com:<owner>/<name>[.git]``
+        - ``git@github.com:<owner>/<name>[.git]``
+        - ``ssh://git@github.com/<owner>/<name>[.git]``
 
         All other formats produce a `ValueError`.
         """
