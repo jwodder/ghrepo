@@ -158,6 +158,7 @@ BAD_REPOS = [
     "https://x-access-token:1234567890@api.github.com/repos/octocat/Hello-World",
     "x-access-token:1234567890@github.com/octocat/Hello-World",
     "git@github.com/jwodder/headerparser",
+    "git@GITHUB.com:joe-q-coder/my.repo.GIT",
     "GIT@github.com:joe-q-coder/my.repo.git",
     "git@github.com/joe-q-coder/my.repo.git",
     "ssh://git@github.com:jwodder/headerparser",
@@ -167,6 +168,7 @@ BAD_REPOS = [
     "SSH://Git@GITHUB.COM/-/test",
     "ssh://GIT@github.com/-/test",
     "https://http://github.com/joe-coder/hello.world",
+    "https://github.com/-Jerry-/geshi-1.0.Git",
 ]
 
 
