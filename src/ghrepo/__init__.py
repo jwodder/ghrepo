@@ -18,7 +18,7 @@ import re
 import subprocess
 from typing import NamedTuple, Optional, Union
 
-__version__ = "0.7.0.dev1"
+__version__ = "0.7.0"
 __author__ = "John Thorvald Wodder II"
 __author_email__ = "ghrepo@varonathe.org"
 __license__ = "MIT"

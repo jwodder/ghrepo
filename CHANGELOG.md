@@ -1,5 +1,5 @@
-v0.7.0 (in development)
------------------------
+v0.7.0 (2022-11-15)
+-------------------
 - Drop support for Python 3.6
 - Support Python 3.11
 - Properly follow RFC 3986 when parsing username & password fields in
