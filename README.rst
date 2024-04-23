@@ -1,19 +1,21 @@
-.. image:: https://www.repostatus.org/badges/latest/active.svg
+|repostatus| |ci-status| |coverage| |pyversions| |license|
+
+.. |repostatus| image:: https://www.repostatus.org/badges/latest/active.svg
     :target: https://www.repostatus.org/#active
     :alt: Project Status: Active — The project has reached a stable, usable
           state and is being actively developed.
 
-.. image:: https://github.com/jwodder/ghrepo/actions/workflows/test.yml/badge.svg
+.. |ci-status| image:: https://github.com/jwodder/ghrepo/actions/workflows/test.yml/badge.svg
     :target: https://github.com/jwodder/ghrepo/actions/workflows/test.yml
     :alt: CI Status
 
-.. image:: https://codecov.io/gh/jwodder/ghrepo/branch/master/graph/badge.svg
+.. |coverage| image:: https://codecov.io/gh/jwodder/ghrepo/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/jwodder/ghrepo
 
-.. image:: https://img.shields.io/pypi/pyversions/ghrepo.svg
+.. |pyversions| image:: https://img.shields.io/pypi/pyversions/ghrepo.svg
     :target: https://pypi.org/project/ghrepo/
 
-.. image:: https://img.shields.io/github/license/jwodder/ghrepo.svg
+.. |license| image:: https://img.shields.io/github/license/jwodder/ghrepo.svg
     :target: https://opensource.org/licenses/MIT
     :alt: MIT License
 
