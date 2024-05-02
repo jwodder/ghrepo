@@ -2,6 +2,7 @@ v0.8.0 (in development)
 -----------------------
 - Support Python 3.12
 - Migrated from setuptools to hatch
+- Drop support for Python 3.7
 
 v0.7.0 (2022-11-15)
 -------------------
