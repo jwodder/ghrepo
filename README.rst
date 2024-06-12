@@ -126,10 +126,9 @@ with any Git as least as far back as version 1.7.
 
 Determine the GitHub repository for the Git repository located at or containing
 the directory ``dirpath`` (default: the current directory) by parsing the URL
-for the specified remote.  parsing the URL for the specified remote.  Raises
-``NoSuchRemoteError`` if the given remote does not exist.  Raises
-``subprocess.CalledProcessError`` if a different Git error occurs, such as the
-given path not being in a Git repository.
+for the specified remote.  Raises ``NoSuchRemoteError`` if the given remote
+does not exist.  Raises ``subprocess.CalledProcessError`` if a different Git
+error occurs, such as the given path not being in a Git repository.
 
 .. code:: python
 
