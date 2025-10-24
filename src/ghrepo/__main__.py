@@ -7,7 +7,7 @@ from typing import Optional
 from . import NoSuchRemoteError, __version__, get_local_repo
 
 
-def main(argv: Optional[list[str]] = None) -> None:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Show current GitHub repository")
     parser.add_argument("-J", "--json", action="store_true", help="Output JSON")
     parser.add_argument(
@@ -24,11 +24,12 @@ def main(argv: Optional[list[str]] = None) -> None:
     try:
         r = get_local_repo(args.dirpath, remote=args.remote)
     except subprocess.CalledProcessError as e:
-        sys.exit(e.returncode)
+        return e.returncode
     except NoSuchRemoteError:
-        sys.exit(2)
+        return 2
     except ValueError as e:
-        sys.exit(f"ghrepo: {e}")
+        print(f"ghrepo: {e}", file=sys.stderr)
+        return 1
     if args.json:
         print(
             json.dumps(
@@ -47,7 +48,8 @@ def main(argv: Optional[list[str]] = None) -> None:
         )
     else:
         print(r)
+    return 0
 
 
 if __name__ == "__main__":
-    main()  # pragma: no cover
+    sys.exit(main())  # pragma: no cover

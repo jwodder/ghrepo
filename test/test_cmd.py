@@ -18,7 +18,7 @@ def test_command(
     monkeypatch.chdir(tmp_repo.path)
     monkeypatch.setattr(sys, "argv", ["ghrepo"])
     spy = mocker.spy(subprocess, "run")
-    main()
+    assert main() == 0
     spy.assert_called_once_with(
         ["git", "remote", "get-url", "--", "origin"],
         cwd=None,
@@ -36,7 +36,7 @@ def test_command_json_dir(
 ) -> None:
     r = tmp_repo.remotes["origin"]
     spy = mocker.spy(subprocess, "run")
-    main(["--json", str(tmp_repo.path)])
+    assert main(["--json", str(tmp_repo.path)]) == 0
     spy.assert_called_once_with(
         ["git", "remote", "get-url", "--", "origin"],
         cwd=str(tmp_repo.path),
@@ -62,9 +62,7 @@ def test_command_json_dir(
 def test_command_non_repo(
     opts: list[str], capsys: pytest.CaptureFixture[str], tmp_path: Path
 ) -> None:
-    with pytest.raises(SystemExit) as excinfo:
-        main(opts + [str(tmp_path)])
-    assert isinstance(excinfo.value.args[0], int)
+    assert main(opts + [str(tmp_path)]) != 0
     out, err = capsys.readouterr()
     assert out == ""
     assert err == ""
@@ -83,12 +81,7 @@ def test_command_bad_url(
             stderr=None,
         ),
     )
-    with pytest.raises(SystemExit) as excinfo:
-        main(opts)
-    assert excinfo.value.args == (
-        "ghrepo: Invalid GitHub URL:"
-        " 'git@gist.github.com:cee837802578a4fc8854df60529af98c.git'",
-    )
+    assert main(opts) == 1
     m.assert_called_once_with(
         ["git", "remote", "get-url", "--", "origin"],
         cwd=None,
@@ -98,7 +91,10 @@ def test_command_bad_url(
     )
     out, err = capsys.readouterr()
     assert out == ""
-    assert err == ""
+    assert err == (
+        "ghrepo: Invalid GitHub URL:"
+        " 'git@gist.github.com:cee837802578a4fc8854df60529af98c.git'\n"
+    )
 
 
 def test_command_remote(
@@ -113,7 +109,7 @@ def test_command_remote(
             stderr=None,
         ),
     )
-    main(["--remote", "upstream"])
+    assert main(["--remote", "upstream"]) == 0
     m.assert_called_once_with(
         ["git", "remote", "get-url", "--", "upstream"],
         cwd=None,
@@ -138,9 +134,7 @@ def test_command_no_such_remote(
             stderr=None,
         ),
     )
-    with pytest.raises(SystemExit) as excinfo:
-        main(["--remote", "upstream"])
-    assert excinfo.value.args == (2,)
+    assert main(["--remote", "upstream"]) == 2
     m.assert_called_once_with(
         ["git", "remote", "get-url", "--", "upstream"],
         cwd=None,
