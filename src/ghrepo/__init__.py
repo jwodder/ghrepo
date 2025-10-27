@@ -268,6 +268,7 @@ class NoSuchRemoteError(Exception):
     def __init__(self, remote: str) -> None:
         #: The queried remote
         self.remote = remote
+        super().__init__(remote)
 
     def __str__(self) -> str:
         return f"Remote not found in Git repository: {self.remote!r}"
@@ -292,6 +293,7 @@ class NoUpstreamError(Exception):
     def __init__(self, branch: str) -> None:
         #: The branch in question
         self.branch = branch
+        super().__init__(branch)
 
     def __str__(self) -> str:
         return f"No upstream remote configured for Git branch: {self.branch!r}"
