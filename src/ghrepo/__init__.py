@@ -16,7 +16,7 @@ from collections.abc import Callable
 from os import PathLike
 import re
 import subprocess
-from typing import NamedTuple, Optional, Union
+from typing import NamedTuple
 
 __version__ = "0.8.0.dev1"
 __author__ = "John Thorvald Wodder II"
@@ -36,7 +36,7 @@ __all__ = [
     "is_git_repo",
 ]
 
-AnyPath = Union[str, bytes, "PathLike[str]", "PathLike[bytes]"]
+AnyPath = str | bytes | PathLike[str] | PathLike[bytes]
 
 #: Regular expression for a valid GitHub username or organization name.  As of
 #: 2017-07-23, trying to sign up to GitHub with an invalid username or create
@@ -124,7 +124,7 @@ class GHRepo(NamedTuple):
     def parse(
         cls,
         spec: str,
-        default_owner: Optional[str | Callable[[], str]] = None,
+        default_owner: str | Callable[[], str] | None = None,
     ) -> GHRepo:
         """
         Parse a GitHub repository specifier.  This can be either a URL (as
@@ -174,7 +174,7 @@ class GHRepo(NamedTuple):
             raise ValueError(f"Invalid GitHub URL: {url!r}")
 
 
-def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") -> GHRepo:
+def get_local_repo(dirpath: AnyPath | None = None, remote: str = "origin") -> GHRepo:
     """
     Determine the GitHub repository for the Git repository located at or
     containing the directory ``dirpath`` (default: the current directory) by
@@ -193,7 +193,7 @@ def get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") ->
     return GHRepo.parse_url(url)
 
 
-def get_branch_upstream(branch: str, dirpath: Optional[AnyPath] = None) -> GHRepo:
+def get_branch_upstream(branch: str, dirpath: AnyPath | None = None) -> GHRepo:
     """
     .. versionadded:: 0.5.0
 
@@ -218,7 +218,7 @@ def get_branch_upstream(branch: str, dirpath: Optional[AnyPath] = None) -> GHRep
     return get_local_repo(dirpath, remote=upstream)
 
 
-def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
+def get_current_branch(dirpath: AnyPath | None = None) -> str:
     """
     Get the current branch for the Git repository located at or containing the
     directory ``dirpath`` (default: the current directory).  Raises
@@ -235,7 +235,7 @@ def get_current_branch(dirpath: Optional[AnyPath] = None) -> str:
             raise  # pragma: no cover
 
 
-def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
+def is_git_repo(dirpath: AnyPath | None = None) -> bool:
     """
     Tests whether the given directory (default: the current directory) is
     either a Git repository or contained in one
@@ -249,7 +249,7 @@ def is_git_repo(dirpath: Optional[AnyPath] = None) -> bool:
     return bool(r.returncode == 0)
 
 
-def readgit(*args: str, dirpath: Optional[AnyPath]) -> str:
+def readgit(*args: str, dirpath: AnyPath | None) -> str:
     return subprocess.run(
         ["git", *args],
         cwd=dirpath,
