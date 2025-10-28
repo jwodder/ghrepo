@@ -102,7 +102,7 @@ All other formats produce a ``ValueError``.
 
     classmethod parse(
         spec: str,
-        default_owner: Optional[Union[str, Callable[[], str]]] = None,
+        default_owner: str | Callable[[], str] | None = None,
     ) -> GHRepo
 
 Parse a GitHub repository specifier.  This can be either a URL (as accepted by
@@ -122,7 +122,7 @@ with any Git as least as far back as version 1.7.
 
 .. code:: python
 
-    get_local_repo(dirpath: Optional[AnyPath] = None, remote: str = "origin") -> GHRepo
+    get_local_repo(dirpath: AnyPath | None = None, remote: str = "origin") -> GHRepo
 
 Determine the GitHub repository for the Git repository located at or containing
 the directory ``dirpath`` (default: the current directory) by parsing the URL
@@ -132,7 +132,7 @@ error occurs, such as the given path not being in a Git repository.
 
 .. code:: python
 
-    get_branch_upstream(branch: str, dirpath: Optional[AnyPath] = None) -> GHRepo
+    get_branch_upstream(branch: str, dirpath: AnyPath | None = None) -> GHRepo
 
 *(New in version 0.5.0)* Determine the GitHub repository for the upstream
 remote of the given branch in the Git repository located at or containing the
@@ -145,7 +145,7 @@ as the given path not being in a Git repository.
 
 .. code:: python
 
-    get_current_branch(dirpath: Optional[AnyPath] = None) -> str
+    get_current_branch(dirpath: AnyPath | None = None) -> str
 
 Get the current branch for the Git repository located at or containing the
 directory ``dirpath`` (default: the current directory).  Raises
@@ -155,7 +155,7 @@ as the given path not being in a Git repository.
 
 .. code:: python
 
-    is_git_repo(dirpath: Optional[AnyPath] = None) -> bool
+    is_git_repo(dirpath: AnyPath | None = None) -> bool
 
 Tests whether the given directory (default: the current directory) is either a
 Git repository or contained in one
